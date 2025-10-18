@@ -77,12 +77,18 @@ function chooseRandomFinger() {
   chosen.style.opacity = '1';
   chosen.style.transition = 'transform 0.35s ease-out, opacity 0.35s ease-out, box-shadow 0.35s ease-out';
   chosen.style.transform = 'translate(-50%, -50%) scale(1.18)';
+  
   const bg = chosen.style.background || '#ffffff';
+  
   chosen.style.boxShadow = `0 18px 48px ${hexToRgba(bg, 0.34)}, inset 0 -8px 24px ${hexToRgba('#000000', 0.3)}`;
+  chosen.style.outline = '8px solid rgba(255, 255, 255, 0.7)';
+  chosen.style.outlineOffset = '0px';
+  chosen.style.transition = 'transform 0.35s ease-out, opacity 0.35s ease-out, box-shadow 0.35s ease-out, outline 0.25s ease-out';
+
 
   setTimeout(() => {
     chosen.style.transform = 'translate(-50%, -50%) scale(1)';
-  }, 50);
+  }, 700);
 
 
 
