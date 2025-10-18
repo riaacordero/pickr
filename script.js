@@ -119,6 +119,75 @@ function createTouchPoint(touch) {
   return point;
 }
 
+const isMobile = 'ontouchstart' in window;
+const keyTouches = new Map();
+
+function createKeyPoint(key, x, y) {
+  const point = createTouchPoint({ 
+    identifier: key.charCodeAt(0), 
+    pageX: x, 
+    pageY: y 
+  });
+  
+  const keyLabel = document.createElement('span');
+  keyLabel.className = 'key-label';
+  keyLabel.textContent = key.toUpperCase();
+  keyLabel.style.cssText = `
+    position: absolute;
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    pointer-events: none;
+  `;
+  point.appendChild(keyLabel);
+  
+  return point;
+}
+
+if (!isMobile) {
+  document.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+    if (/^[a-z0-9]$/.test(key) && !keyTouches.has(key)) {
+
+      const x = Math.random() * (window.innerWidth - 200) + 100;
+      const y = Math.random() * (window.innerHeight - 200) + 100;
+      
+      const point = createKeyPoint(key, x, y);
+      point.id = `key-${key}`;
+      app.appendChild(point);
+      keyTouches.set(key, point);
+      touches[key] = point;
+
+      message.textContent = 'Hold still...';
+      
+      clearTimeout(app.choiceTimeout);
+      app.choiceTimeout = setTimeout(() => chooseRandomFinger(), 1000);
+    }
+  });
+
+  document.addEventListener('keyup', (e) => {
+    const key = e.key.toLowerCase();
+    if (keyTouches.has(key)) {
+      const point = keyTouches.get(key);
+      point.remove();
+      keyTouches.delete(key);
+      delete touches[key];
+
+      if (keyTouches.size === 0) {
+        message.textContent = 'Press any key (A-Z, 0-9)';
+        clearTimeout(app.choiceTimeout);
+      }
+    }
+  });
+
+  // Desktop msg:
+  message.textContent = 'Press any key (A-Z, 0-9)';
+} else {
+  // Mobile msg
+  message.textContent = 'Place your fingers on the screen';
+}
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js');
 }
