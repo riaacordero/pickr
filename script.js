@@ -1,5 +1,6 @@
 const app = document.getElementById('app');
 const message = document.getElementById('message');
+const popSound = new Audio('assets/pop.mp3');
 let touches = {};
 
 app.addEventListener('touchstart', (e) => {
@@ -53,6 +54,13 @@ function chooseRandomFinger() {
 
   const randomKey = keys[Math.floor(Math.random() * keys.length)];
   const chosen = touches[randomKey];
+
+  // Play the pop sound
+  popSound.currentTime = 0; // Reset the audio to start
+  popSound.play().catch(error => {
+    // Silently handle any autoplay restrictions
+    console.log('Could not play sound:', error);
+  });
 
   for (const id in touches) {
     touches[id].style.opacity = '0.35';
