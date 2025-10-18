@@ -52,48 +52,51 @@ app.addEventListener('touchend', (e) => {
 });
 
 function chooseRandomFinger() {
-  for (const id in touches) {
-    touches[id].classList.remove('bouncing');
-  }
   const keys = Object.keys(touches);
   if (keys.length === 0) return;
 
   const randomKey = keys[Math.floor(Math.random() * keys.length)];
   const chosen = touches[randomKey];
 
-  // Play the pop sound
-  popSound.currentTime = 0; // Reset the audio to start
-  popSound.play().catch(error => {
-    // Silently handle any autoplay restrictions
-    console.log('Could not play sound:', error);
-  });
+  popSound.currentTime = 0;
+  popSound.play().catch(() => {});
 
   for (const id in touches) {
     touches[id].style.opacity = '0.35';
     touches[id].style.transform = 'translate(-50%, -50%) scale(1)';
-    touches[id].style.boxShadow = touches[id].style.boxShadow.replace(/rgba\([^)]*\)/g, (m) => m); // keep as-is
+    touches[id].style.boxShadow = touches[id].style.boxShadow.replace(/rgba\([^)]*\)/g, (m) => m);
+    touches[id].style.border = 'none';
   }
 
   chosen.style.opacity = '1';
-  chosen.style.transition = 'transform 0.35s ease-out, opacity 0.35s ease-out, box-shadow 0.35s ease-out';
   chosen.style.transform = 'translate(-50%, -50%) scale(1.18)';
-  
-  const bg = chosen.style.background || '#ffffff';
-  
-  chosen.style.boxShadow = `0 18px 48px ${hexToRgba(bg, 0.34)}, inset 0 -8px 24px ${hexToRgba('#000000', 0.3)}`;
   chosen.style.outline = '8px solid rgba(255, 255, 255, 0.7)';
-  chosen.style.outlineOffset = '0px';
-  chosen.style.transition = 'transform 0.35s ease-out, opacity 0.35s ease-out, box-shadow 0.35s ease-out, outline 0.25s ease-out';
+  const bg = chosen.style.background || '#ffffff';
+  chosen.style.boxShadow = `0 18px 48px ${hexToRgba(bg, 0.34)}, inset 0 -8px 24px ${hexToRgba('#000000', 0.3)}`;
+  message.style.opacity = '0.65';
 
+  // Follow confetti for 2 seconds
+  let duration = 800;
+  let interval = 120;
+  const confettiInterval = setInterval(() => {
+    const rect = chosen.getBoundingClientRect();
+    const x = (rect.left + rect.width / 2) / window.innerWidth;
+    const y = (rect.top + rect.height / 2) / window.innerHeight;
 
-  setTimeout(() => {
-    chosen.style.transform = 'translate(-50%, -50%) scale(1)';
-  }, 700);
+    confetti({
+      particleCount: 10,
+      spread: 45,
+      startVelocity: 30,
+      origin: { x, y },
+      colors: ['#FF6B6B', '#4ECDC4', '#FFBE0B', '#8338EC', '#3A86FF'],
+      ticks: 100,
+      gravity: 1.4
+    });
+  }, interval);
 
-
-
-  message.textContent = 'Chosen!';
+  setTimeout(() => clearInterval(confettiInterval), duration);
 }
+
 
 const touchColors = [
   '#FF6B6B', // coral red
@@ -199,6 +202,7 @@ if (!isMobile) {
 
       if (keyTouches.size === 0) {
         message.textContent = 'Press any key (A-Z, 0-9)';
+        message.style.opacity = '0.65';
         clearTimeout(app.choiceTimeout);
       }
     }
@@ -206,9 +210,11 @@ if (!isMobile) {
 
   // Desktop msg:
   message.textContent = 'Press any key (A-Z, 0-9)';
+  message.style.opacity = '0.65';
 } else {
   // Mobile msg
   message.textContent = 'Place your fingers on the screen';
+  message.style.opacity = '0.65';
 }
 
 if ('serviceWorker' in navigator) {
