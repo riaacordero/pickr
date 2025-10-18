@@ -2,7 +2,7 @@
   "name": "Pickr",
   "short_name": "Pickr",
   "description": "Pickr is a simple and fun way to decide. Just place your fingers on the screen, and it chooses one for you! Works on both mobile and desktop.",
-  "start_url": "./",
+  "start_url": "./pickr",
   "scope": ".",
   "display": "standalone",
   "background_color": "#101827",
