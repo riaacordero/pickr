@@ -185,7 +185,7 @@ if (!isMobile) {
         }      
 
       clearTimeout(app.choiceTimeout);
-      app.choiceTimeout = setTimeout(() => chooseRandomFinger(), 1000);
+      app.choiceTimeout = setTimeout(() => chooseRandomFinger(), 2000);
     }
   });
 
