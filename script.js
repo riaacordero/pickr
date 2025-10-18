@@ -93,8 +93,7 @@ function createTouchPoint(touch) {
   const point = document.createElement('div');
   const size = 120;
   const color = touchColors[touch.identifier % touchColors.length];
-  const glow = hexToRgba(color, 0.22);
-  const innerGlow = hexToRgba(color, 0.6);
+  const lighterColor = hexToRgba(color, 0.55); // Changed to 0.55 for 45% lighter
 
   point.className = 'touch-point absolute transform -translate-x-1/2 -translate-y-1/2';
   point.style.cssText = `
@@ -102,30 +101,13 @@ function createTouchPoint(touch) {
     height: ${size}px;
     left: ${touch.pageX}px;
     top: ${touch.pageY}px;
-    background: ${color};
+    background: radial-gradient(circle at center, ${lighterColor} 0%, ${color} 70%);
     border-radius: 50%;
     opacity: 1;
     transition: all 160ms ease;
-    box-shadow: 0 8px 28px ${glow}, inset 0 -6px 18px ${hexToRgba('#000000', 0.25)};
-    display: flex;
-    align-items: center;
-    justify-content: center;
     pointer-events: none;
   `;
 
-  const innerPoint = document.createElement('div');
-  const innerSize = Math.round(size * 0.45);
-  innerPoint.style.cssText = `
-    width: ${innerSize}px;
-    height: ${innerSize}px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, ${hexToRgba('#ffffff', 0.9)} 0%, ${innerGlow} 35%, ${hexToRgba(color, 0.15)} 70%);
-    transform: translateY(-6%);
-    box-shadow: 0 4px 12px ${hexToRgba('#000000', 0.25)};
-    pointer-events: none;
-  `;
-
-  point.appendChild(innerPoint);
   return point;
 }
 
