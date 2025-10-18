@@ -15,6 +15,9 @@ app.addEventListener('touchstart', (e) => {
   }
 
   message.textContent = 'Hold still...';
+  for (const id in touches) {
+    touches[id].classList.add('bouncing');
+  }
 
   clearTimeout(app.choiceTimeout);
   app.choiceTimeout = setTimeout(() => chooseRandomFinger(), 1000);
@@ -49,6 +52,9 @@ app.addEventListener('touchend', (e) => {
 });
 
 function chooseRandomFinger() {
+  for (const id in touches) {
+    touches[id].classList.remove('bouncing');
+  }
   const keys = Object.keys(touches);
   if (keys.length === 0) return;
 
@@ -69,9 +75,16 @@ function chooseRandomFinger() {
   }
 
   chosen.style.opacity = '1';
+  chosen.style.transition = 'transform 0.35s ease-out, opacity 0.35s ease-out, box-shadow 0.35s ease-out';
   chosen.style.transform = 'translate(-50%, -50%) scale(1.18)';
   const bg = chosen.style.background || '#ffffff';
   chosen.style.boxShadow = `0 18px 48px ${hexToRgba(bg, 0.34)}, inset 0 -8px 24px ${hexToRgba('#000000', 0.3)}`;
+
+  setTimeout(() => {
+    chosen.style.transform = 'translate(-50%, -50%) scale(1)';
+  }, 50);
+
+
 
   message.textContent = 'Chosen!';
 }
@@ -112,9 +125,10 @@ function createTouchPoint(touch) {
     background: radial-gradient(circle at center, ${lighterColor} 0%, ${color} 70%);
     border-radius: 50%;
     opacity: 1;
-    transition: all 160ms ease;
+    transition: all 0.6s ease-out;
     pointer-events: none;
   `;
+
 
   return point;
 }
@@ -160,7 +174,10 @@ if (!isMobile) {
       touches[key] = point;
 
       message.textContent = 'Hold still...';
-      
+        for (const id in touches) {
+          touches[id].classList.add('bouncing');
+        }      
+
       clearTimeout(app.choiceTimeout);
       app.choiceTimeout = setTimeout(() => chooseRandomFinger(), 1000);
     }

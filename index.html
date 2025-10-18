@@ -13,6 +13,23 @@
   <meta name="theme-color" content="#101827" />
 
   <style>
+    @keyframes bounce {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.15); }
+    }
+
+    .touch-point {
+      transition: transform 0.35s ease-out, opacity 0.35s ease-out;
+    }
+
+    .touch-point.bouncing {
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+
+  .bouncing {
+    animation: bounce 2s ease-in-out infinite;
+  }
     .key-label {
       display: flex;
       align-items: center;
