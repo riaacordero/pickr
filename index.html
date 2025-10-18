@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Pickr</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -22,29 +22,118 @@
       font-family: system-ui, -apple-system, sans-serif;
     }
 
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: max(2rem, env(safe-area-inset-top)) 2rem 2rem;
+      display: flex;
+      justify-content: center;
+      z-index: 10;
+    }
+
     .logo {
-      width: 120px;
+      width: 100px;
       height: auto;
-      margin-bottom: 2rem;
       filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
     }
 
     .content-wrapper {
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       position: absolute;
     }
+
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      padding-top: 0;
+      padding-bottom: 0;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      transition: background 0.3s ease;
+    }
+
+    .color-picker {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease;
+      z-index: 20;
+    }
+
+    .color-picker:hover {
+      transform: scale(1.1);
+    }
+
+    .color-picker:active {
+      transform: scale(0.95);
+    }
   </style>
+
+  <script>
+    const themes = {
+      phantom: ['#1e1e1e', '#565656'],
+      oceanman: ['#11E1E1', '#B1F4C9'],
+      rosas: ['#EA4F80', '#FBA5A6'],
+      enchanted: ['#29A0A0', '#A5C1FB'],
+      sodaPop: ['#29A041', '#A7FBA5'],
+      flamePrincess: ['#F9B576', '#EA4F51'],
+      midnightBlue: ['#101827', '#3A578D']
+    };
+
+    function setRandomTheme() {
+      const themeNames = Object.keys(themes);
+      const randomTheme = themeNames[Math.floor(Math.random() * themeNames.length)];
+      const [color1, color2] = themes[randomTheme];
+      
+      document.body.style.background = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
+      
+      document.querySelector('meta[name="theme-color"]').content = color1;
+      
+      const picker = document.querySelector('.color-picker');
+      picker.style.background = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
+    }
+
+    window.addEventListener('load', () => {
+      setRandomTheme();
+      
+      const picker = document.querySelector('.color-picker');
+      picker.addEventListener('click', setRandomTheme);
+    });
+  </script>
 </head>
-<body class="flex items-center justify-center h-screen select-none" style="background: linear-gradient(135deg, #101827 0%, #3A578D 100%)">
+<body class="flex items-center justify-center select-none">
+  <header class="header">
+    <img src="assets/pickr.svg" alt="Pickr Logo" class="logo" />
+  </header>
+
   <div id="app" class="w-full h-full flex items-center justify-center relative">
     <div class="content-wrapper">
-      <img src="assets/pickr.svg" alt="Pickr Logo" class="logo" />
-      <h1 id="message" class="text-2xl text-gray-400">Place your fingers on the screen</h1>
+      <h1 id="message" class="text-2xl text-white">Place your fingers on the screen</h1>
     </div>
   </div>
+
+  <div class="color-picker"></div>
 
   <script src="script.js"></script>
 </body>
