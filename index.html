@@ -21,11 +21,29 @@
       height: 100%;
       font-family: system-ui, -apple-system, sans-serif;
     }
+
+    .logo {
+      width: 120px;
+      height: auto;
+      margin-bottom: 2rem;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    }
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+    }
   </style>
 </head>
-<body class="flex items-center justify-center h-screen bg-gray-900 text-white select-none">
+<body class="flex items-center justify-center h-screen select-none" style="background: linear-gradient(135deg, #101827 0%, #3A578D 100%)">
   <div id="app" class="w-full h-full flex items-center justify-center relative">
-    <h1 id="message" class="text-2xl text-gray-400 absolute">Place your fingers on the screen</h1>
+    <div class="content-wrapper">
+      <img src="assets/pickr.svg" alt="Pickr Logo" class="logo" />
+      <h1 id="message" class="text-2xl text-gray-400">Place your fingers on the screen</h1>
+    </div>
   </div>
 
   <script src="script.js"></script>
