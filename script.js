@@ -3,14 +3,35 @@ const message = document.getElementById('message');
 const popSound = new Audio('assets/pop.mp3');
 let touches = {};
 
-function updateMessage() {
-  if (Object.keys(touches).length === 0) {
-    message.textContent = isMobile
-      ? 'Place your fingers on the screen'
-      : 'Press any key (A-Z, 0-9)';
-    message.style.opacity = '0.65';
+function updateMessage(state = 'idle') {
+  switch (state) {
+    case 'idle':
+      message.textContent = isMobile
+        ? 'Place your fingers on the screen'
+        : 'Press any key (A-Z, 0-9)';
+      break;
+
+    case 'hold':
+      message.textContent = isMobile
+        ? 'Add at least two fingers'
+        : 'Press at least two keys';
+      break;
+
+    case 'waiting':
+      message.textContent = 'Hold still...';
+      break;
+
+    case 'chosen':
+      message.textContent = 'Chosen!';
+      break;
+
+    default:
+      message.textContent = '';
   }
+
+  message.style.opacity = '0.65';
 }
+
 
 function handleTouchStart(e) {
   e.preventDefault();
@@ -22,8 +43,8 @@ function handleTouchStart(e) {
       touches[touch.identifier] = point;
     }
   }
-
-  message.textContent = 'Hold still...';
+  
+  updateMessage('waiting');
   for (const id in touches) {
     touches[id].classList.add('bouncing');
   }
@@ -56,7 +77,7 @@ function handleTouchEnd(e) {
       setTimeout(() => {
         t.remove();
         delete touches[id];
-        updateMessage(); // ensure message updates
+        updateMessage('idle');
       }, 300); // match transition duration
     }
   });
@@ -112,13 +133,13 @@ function chooseRandomFinger() {
     });
   }, interval);
 
-  // after animation, settle and reset message
+  updateMessage('chosen');
+
   setTimeout(() => {
     clearInterval(confettiInterval);
     chosen.style.transform = 'translate(-50%, -50%) scale(1)';
   }, duration);
 
-  updateMessage();
 }
 
 const touchColors = [
