@@ -3,6 +3,15 @@ const message = document.getElementById('message');
 const popSound = new Audio('assets/pop.mp3');
 let touches = {};
 
+function updateMessage() {
+  if (Object.keys(touches).length === 0) {
+    message.textContent = isMobile
+      ? 'Place your fingers on the screen'
+      : 'Press any key (A-Z, 0-9)';
+    message.style.opacity = '0.65';
+  }
+}
+
 function handleTouchStart(e) {
   e.preventDefault();
   for (const touch of e.touches) {
@@ -37,26 +46,22 @@ function handleTouchMove(e) {
 function handleTouchEnd(e) {
   e.preventDefault();
   const currentTouches = Array.from(e.touches).map(touch => touch.identifier);
-  
+
   Object.keys(touches).forEach(id => {
     if (!currentTouches.includes(Number(id))) {
       const t = touches[id];
-      t.style.transition = 'transform 0.4s ease-out, opacity 0.4s ease-out';
+      t.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
       t.style.opacity = '0';
       t.style.transform = 'translate(-50%, -50%) scale(0.5)';
       setTimeout(() => {
         t.remove();
         delete touches[id];
-      }, 400);
-    ad}
-
+        updateMessage(); // ensure message updates
+      }, 300); // match transition duration
+    }
   });
-
-  if (Object.keys(touches).length === 0) {
-    message.textContent = 'Place your fingers on the screen';
-    clearTimeout(app.choiceTimeout);
-  }
 }
+
 
 app.addEventListener('touchstart', handleTouchStart, { passive: false });
 app.addEventListener('touchmove', handleTouchMove, { passive: false });
@@ -109,8 +114,10 @@ function chooseRandomFinger() {
 
   setTimeout(() => {
     clearInterval(confettiInterval);
-    chosen.style.transform = 'translate(-50%, -50%) scale(1)'; // settle to normal size
+    chosen.style.transform = 'translate(-50%, -50%) scale(1)';
   }, duration);
+
+  updateMessage();
 }
 
 const touchColors = [
@@ -208,20 +215,14 @@ if (!isMobile) {
         point.remove();
         keyTouches.delete(key);
         delete touches[key];
-      }, 100);
-      if (keyTouches.size === 0) {
-        message.textContent = 'Press any key (A-Z, 0-9)';
-        message.style.opacity = '0.65';
+        updateMessage();
         clearTimeout(app.choiceTimeout);
-      }
+      }, 100);
+
+      updateMessage();
+      clearTimeout(app.choiceTimeout);
     }
   });
-
-  message.textContent = 'Press any key (A-Z, 0-9)';
-  message.style.opacity = '0.65';
-} else {
-  message.textContent = 'Place your fingers on the screen';
-  message.style.opacity = '0.65';
 }
 
 if ('serviceWorker' in navigator) {
