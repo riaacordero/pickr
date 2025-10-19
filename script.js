@@ -44,10 +44,14 @@ function handleTouchStart(e) {
     }
   }
   
+if (Object.keys(touches).length < 2) {
+  updateMessage('hold');
+  for (const id in touches) touches[id].classList.remove('bouncing');
+  clearTimeout(app.choiceTimeout);
+  return;
+}
   updateMessage('waiting');
-  for (const id in touches) {
-    touches[id].classList.add('bouncing');
-  }
+  for (const id in touches) touches[id].classList.add('bouncing');
 
   clearTimeout(app.choiceTimeout);
   app.choiceTimeout = setTimeout(() => chooseRandomFinger(), 1000);
@@ -216,13 +220,19 @@ if (!isMobile) {
       keyTouches.set(key, point);
       touches[key] = point;
 
-      message.textContent = 'Hold still...';
-        for (const id in touches) {
-          touches[id].classList.add('bouncing');
-        }      
+      if (keyTouches.size < 2) {
+        updateMessage('hold');
+        for (const id in touches) touches[id].classList.remove('bouncing');
+        clearTimeout(app.choiceTimeout);
+        return;
+      }
+
+      updateMessage('waiting');
+      for (const id in touches) touches[id].classList.add('bouncing');
 
       clearTimeout(app.choiceTimeout);
       app.choiceTimeout = setTimeout(() => chooseRandomFinger(), 2000);
+
     }
   });
 
