@@ -40,9 +40,16 @@ function handleTouchEnd(e) {
   
   Object.keys(touches).forEach(id => {
     if (!currentTouches.includes(Number(id))) {
-      touches[id].remove();
-      delete touches[id];
-    }
+      const t = touches[id];
+      t.style.transition = 'transform 0.4s ease-out, opacity 0.4s ease-out';
+      t.style.opacity = '0';
+      t.style.transform = 'translate(-50%, -50%) scale(0.5)';
+      setTimeout(() => {
+        t.remove();
+        delete touches[id];
+      }, 400);
+    ad}
+
   });
 
   if (Object.keys(touches).length === 0) {
@@ -105,8 +112,6 @@ function chooseRandomFinger() {
     chosen.style.transform = 'translate(-50%, -50%) scale(1)'; // settle to normal size
   }, duration);
 }
-
-
 
 const touchColors = [
   '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFBE0B',
@@ -196,9 +201,14 @@ if (!isMobile) {
     const key = e.key.toLowerCase();
     if (keyTouches.has(key)) {
       const point = keyTouches.get(key);
-      point.remove();
-      keyTouches.delete(key);
-      delete touches[key];
+      point.style.transition = 'transform 0.4s ease-out, opacity 0.4s ease-out';
+      point.style.opacity = '0';
+      point.style.transform = 'translate(-50%, -50%) scale(0.5)';
+      setTimeout(() => {
+        point.remove();
+        keyTouches.delete(key);
+        delete touches[key];
+      }, 100);
       if (keyTouches.size === 0) {
         message.textContent = 'Press any key (A-Z, 0-9)';
         message.style.opacity = '0.65';
