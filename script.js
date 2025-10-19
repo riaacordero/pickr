@@ -107,9 +107,16 @@ function chooseRandomFinger() {
     });
   }, interval);
 
+  // after animation, settle and reset message
   setTimeout(() => {
     clearInterval(confettiInterval);
-    chosen.style.transform = 'translate(-50%, -50%) scale(1)'; // settle to normal size
+    chosen.style.transform = 'translate(-50%, -50%) scale(1)'; // settle
+    if (isMobile) {
+      message.textContent = 'Place your fingers on the screen';
+    } else {
+      message.textContent = 'Press any key (A-Z, 0-9)';
+    }
+    message.style.opacity = '0.65';
   }, duration);
 }
 
