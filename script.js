@@ -66,20 +66,22 @@ function chooseRandomFinger() {
   popSound.play().catch(() => {});
 
   for (const id in touches) {
-    touches[id].style.opacity = '0.35';
-    touches[id].style.transform = 'translate(-50%, -50%) scale(1)';
-    touches[id].style.boxShadow = touches[id].style.boxShadow.replace(/rgba\([^)]*\)/g, (m) => m);
-    touches[id].style.border = 'none';
+    const t = touches[id];
+    t.classList.remove('bouncing');
+    t.style.opacity = '0.35';
+    t.style.transform = 'translate(-50%, -50%) scale(1)';
+    t.style.boxShadow = t.style.boxShadow.replace(/rgba\([^)]*\)/g, (m) => m);
+    t.style.border = 'none';
   }
 
   chosen.style.opacity = '1';
+  chosen.style.transition = 'transform 0.6s ease-out, opacity 0.35s ease-out, box-shadow 0.35s ease-out, outline 0.25s ease-out';
   chosen.style.transform = 'translate(-50%, -50%) scale(1.18)';
   chosen.style.outline = '8px solid rgba(255, 255, 255, 0.7)';
   const bg = chosen.style.background || '#ffffff';
   chosen.style.boxShadow = `0 18px 48px ${hexToRgba(bg, 0.34)}, inset 0 -8px 24px ${hexToRgba('#000000', 0.3)}`;
   message.style.opacity = '0.65';
 
-  // Follow confetti for 2 seconds
   let duration = 800;
   let interval = 120;
   const confettiInterval = setInterval(() => {
@@ -98,8 +100,12 @@ function chooseRandomFinger() {
     });
   }, interval);
 
-  setTimeout(() => clearInterval(confettiInterval), duration);
+  setTimeout(() => {
+    clearInterval(confettiInterval);
+    chosen.style.transform = 'translate(-50%, -50%) scale(1)'; // settle to normal size
+  }, duration);
 }
+
 
 
 const touchColors = [
