@@ -183,6 +183,8 @@ function createTouchPoint(touch) {
 }
 
 const isMobile = 'ontouchstart' in window;
+updateMessage();
+
 const keyTouches = new Map();
 
 function createKeyPoint(key, x, y) {
